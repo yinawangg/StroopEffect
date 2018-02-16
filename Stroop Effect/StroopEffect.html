@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych-6.0/jspsych.js"></script>
+    <script src="jspsych-6.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <link href="jspsych-6.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+	<style>
+table, th, td {
+    
+}
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+  </style>
+  </head>
+  <body></body>
+  <script>
+
+    /* create timeline */
+    var timeline = [];
+
+    /* define welcome message trial */
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the negative priming experiment. Press any key to begin."
+    };
+    timeline.push(welcome);
+
+    /* define instructions trial */
+    var instructions = {
+      type: "html-keyboard-response",
+      stimulus: "<p>In this experiment, a word will appear in the center " +
+          "of the screen.</p><p>If the color of the word is <strong>red</strong>, " +
+          "press the letter R on the keyboard as fast as you can.</p>" +
+          "<p>If the color of word is <strong>blue</strong>, press the letter B " +
+          "as fast as you can.</p>" +
+		  "<p> If the color of the word is <strong> green</strong>, " +
+		  "press the letter G as fast as you can.</p>" +
+          "<table style='width:100%'>" +
+		  "<tr><th style='color:red'>RED</th>" +
+		  "<th style='color:blue'>BLUE</th>" +
+          "<th style='color:#27AE60'>GREEN</th></tr>" +
+		  "<tr><td><strong>Press the R key</strong></td><td><strong>Press the B key</strong></td><td><strong>Press the G key</strong></td></tr></table>" +
+          "<p>Press any key to begin.</p>",
+      post_trial_gap: 1000
+    };
+    timeline.push(instructions);
+
+    /* test trials */
+
+    var test_stimuli = [
+      { stimulus: "<div style='color:red'>RED</div>", data: { test_part: 'test', correct_response: 'r' } },
+      { stimulus: "<div style='color:red'>BLUE</div>", data: { test_part: 'test', correct_response: 'r' } }
+    ];
+
+    var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000,
+      data: {test_part: 'fixation'}
+    }
+
+    var test = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['r', 'b'],
+      data: jsPsych.timelineVariable('data'),
+      on_finish: function(data){
+        data.correct = data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.correct_response);
+      },
+    }
+
+	timeline.push(fixation);
+	timeline.push(test);
+
+    /* define debrief */
+
+
+    /* start the experiment */
+    jsPsych.init({
+      timeline: timeline,
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+  </script>
+</html>
