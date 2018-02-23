@@ -53,7 +53,7 @@ th, td {
 
    var test_stimuli = [
       { stimulus: "<p style='color:red'><font size='200px'>RED</font></p>", data: { test_part: 'test', correct_response: 'r' } },
-      { stimulus: "<p style='color:red'<font size='200px'>>BLUE</font></p>", data: { test_part: 'test', correct_response: 'r' } },
+      { stimulus: "<p style='color:red'><font size='200px'>BLUE</font></p>", data: { test_part: 'test', correct_response: 'r' } },
 	  { stimulus: "<p style='color:red'><font size='200px'>GREEN</font></p>", data: { test_part: 'test', correct_response: 'r' } },
 	  { stimulus: "<p style='color:blue'><font size='200px'>RED</font></p>", data: { test_part: 'test', correct_response: 'b' } },
 	  { stimulus: "<p style='color:blue'><font size='200px'>BLUE</font></p>", data: { test_part: 'test', correct_response: 'b' } },
@@ -81,8 +81,8 @@ th, td {
       },
     }
 
-	timeline.push(fixation);
-	timeline.push(test);
+	/*timeline.push(fixation);
+	timeline.push(test);*/
 
 	  var test_procedure = {
       timeline: [fixation, test],
