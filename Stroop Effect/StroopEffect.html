@@ -51,9 +51,16 @@ th, td {
 
     /* test trials */
 
-    var test_stimuli = [
-      { stimulus: "<div style='color:red'>RED</div>", data: { test_part: 'test', correct_response: 'r' } },
-      { stimulus: "<div style='color:red'>BLUE</div>", data: { test_part: 'test', correct_response: 'r' } }
+   var test_stimuli = [
+      { stimulus: "<p style='color:red'><font size='200px'>RED</font></p>", data: { test_part: 'test', correct_response: 'r' } },
+      { stimulus: "<p style='color:red'<font size='200px'>>BLUE</font></p>", data: { test_part: 'test', correct_response: 'r' } },
+	  { stimulus: "<p style='color:red'><font size='200px'>GREEN</font></p>", data: { test_part: 'test', correct_response: 'r' } },
+	  { stimulus: "<p style='color:blue'><font size='200px'>RED</font></p>", data: { test_part: 'test', correct_response: 'b' } },
+	  { stimulus: "<p style='color:blue'><font size='200px'>BLUE</font></p>", data: { test_part: 'test', correct_response: 'b' } },
+	  { stimulus: "<p style='color:blue'><font size='200px'>GREEN</font></p>", data: { test_part: 'test', correct_response: 'b' } },
+	  { stimulus: "<p style='color:#27AE60'><font size='200px'>RED</font></p>", data: { test_part: 'test', correct_response: 'g' } },
+	  { stimulus: "<p style='color:#27AE60'><font size='200px'>BLUE</font></p>", data: { test_part: 'test', correct_response: 'g' } },
+	  { stimulus: "<p style='color:#27AE60'><font size='200px'>GREEN</font></p>", data: { test_part: 'test', correct_response: 'g' } }
     ];
 
     var fixation = {
@@ -65,9 +72,9 @@ th, td {
     }
 
     var test = {
-      type: "image-keyboard-response",
+      type: "html-keyboard-response",
       stimulus: jsPsych.timelineVariable('stimulus'),
-      choices: ['r', 'b'],
+      choices: ['r', 'b', 'g'],
       data: jsPsych.timelineVariable('data'),
       on_finish: function(data){
         data.correct = data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.correct_response);
@@ -77,7 +84,32 @@ th, td {
 	timeline.push(fixation);
 	timeline.push(test);
 
+	  var test_procedure = {
+      timeline: [fixation, test],
+      timeline_variables: test_stimuli,
+      repetitions: 5,
+      randomize_order: true
+    }
+    timeline.push(test_procedure);
+
     /* define debrief */
+
+    var debrief_block = {
+      type: "html-keyboard-response",
+      stimulus: function() {
+
+        var trials = jsPsych.data.get().filter({test_part: 'test'});
+        var correct_trials = trials.filter({correct: true});
+        var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+        var rt = Math.round(correct_trials.select('rt').mean());
+
+        return "<p>You responded correctly on "+accuracy+"% of the trials.</p>"+
+        "<p>Your average response time was "+rt+"ms.</p>"+
+        "<p>Press any key to complete the experiment. Thank you!</p>";
+
+      }
+    };
+    timeline.push(debrief_block);
 
 
     /* start the experiment */
